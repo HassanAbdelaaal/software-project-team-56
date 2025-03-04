@@ -14,3 +14,4 @@ const EventSchema = new mongoose.Schema({
 }, { timestamps: true }); // Adds createdAt & updatedAt
 
 module.exports = mongoose.model("Event", EventSchema);
+
