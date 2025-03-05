@@ -14,3 +14,4 @@ const BookingSchema = new mongoose.Schema({
 
 module.exports = mongoose.model("Booking", BookingSchema);
 
+console.log("more trials")
