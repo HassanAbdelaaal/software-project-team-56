@@ -1,0 +1,55 @@
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const config = require('../config/config');
+
+/**
+ * Generate JWT token for authenticated users
+ * @param {Object} user - User object with id
+ * @returns {String} JWT token
+ */
+exports.generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id },
+    config.jwt.secret,
+    { expiresIn: config.jwt.expiresIn }
+  );
+};
+
+/**
+ * Generate password reset token
+ * @returns {String} Reset token
+ */
+exports.generateResetToken = () => {
+  // Generate random token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash token and return both versions
+  const resetTokenHash = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Calculate expiration time
+  const resetExpires = Date.now() + config.passwordReset.tokenExpiration * 60 * 1000;
+
+  return {
+    resetToken,        // Plain token to send to user
+    resetTokenHash,    // Hashed token to store in database
+    resetExpires       // Token expiration timestamp
+  };
+};
+
+/**
+ * Verify if a reset token matches its hashed version
+ * @param {String} resetToken - Plain reset token
+ * @param {String} hashedToken - Hashed reset token
+ * @returns {Boolean} True if token matches
+ */
+exports.verifyResetToken = (resetToken, hashedToken) => {
+  const hash = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  
+  return hash === hashedToken;
+};
