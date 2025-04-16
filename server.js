@@ -21,6 +21,8 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/v1', require('./routes/auth'));
 app.use('/api/v1', require('./routes/user'));
+app.use('/api/v1/events', require('./routes/event')); // Added event routes
+
 
 // Error handling middleware
 app.use(errorHandler);
