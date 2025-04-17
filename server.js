@@ -21,6 +21,10 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/v1', require('./routes/auth'));
 app.use('/api/v1', require('./routes/user'));
+app.use('/api/v1/events', require('./routes/event')); // Added event routes
+app.use('/api/v1/bookings', require('./routes/booking'));
+
+
 
 // Error handling middleware
 app.use(errorHandler);
