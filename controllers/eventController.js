@@ -20,36 +20,41 @@ exports.createEvent = async (req, res, next) => {
 };
 
 
-// @desc    Get all events
-// @route   GET /api/v1/events
-// @access  Public
+// @desc Get all events
+// @route GET /api/v1/events
+// @access Public
 exports.getEvents = async (req, res, next) => {
   try {
     const reqQuery = { ...req.query };
     const removeFields = ['select', 'sort', 'page', 'limit'];
     removeFields.forEach(param => delete reqQuery[param]);
 
-    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+    // Add active events filter
+    if (!reqQuery.status) {
+      reqQuery.status = 'active';
+    }
+
+    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => '$${match}');
     let query = Event.find(JSON.parse(queryStr)).populate('organizer', 'name email');
 
     if (req.query.select) {
       query = query.select(req.query.select.split(',').join(' '));
     }
-
+    
     query = req.query.sort ? query.sort(req.query.sort.split(',').join(' ')) : query.sort('-createdAt');
-
+    
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const startIndex = (page - 1) * limit;
     const total = await Event.countDocuments(JSON.parse(queryStr));
+    
     query = query.skip(startIndex).limit(limit);
-
     const events = await query;
-
+    
     const pagination = {};
     if ((page * limit) < total) pagination.next = { page: page + 1, limit };
     if (startIndex > 0) pagination.prev = { page: page - 1, limit };
-
+    
     res.status(200).json({ success: true, count: events.length, pagination, data: events });
   } catch (error) {
     next(error);
@@ -195,3 +200,46 @@ exports.getEventAnalytics = async (req, res, next) => {
   }
 };
 
+// @desc Get all events (including approved, pending, declined)
+// @route GET /api/v1/events/all
+// @access Admin only
+exports.getAllEvents = async (req, res, next) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== "System Admin") {
+      return res.status(403).json({
+        success: false,
+        error: 'Not authorized to access this resource'
+      });
+    }
+
+    const reqQuery = { ...req.query };
+    const removeFields = ['select', 'sort', 'page', 'limit'];
+    removeFields.forEach(param => delete reqQuery[param]);
+    
+    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => '$${match}');
+    let query = Event.find(JSON.parse(queryStr)).populate('organizer', 'name email');
+    
+    if (req.query.select) {
+      query = query.select(req.query.select.split(',').join(' '));
+    }
+    
+    query = req.query.sort ? query.sort(req.query.sort.split(',').join(' ')) : query.sort('-createdAt');
+    
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const startIndex = (page - 1) * limit;
+    const total = await Event.countDocuments(JSON.parse(queryStr));
+    
+    query = query.skip(startIndex).limit(limit);
+    const events = await query;
+    
+    const pagination = {};
+    if ((page * limit) < total) pagination.next = { page: page + 1, limit };
+    if (startIndex > 0) pagination.prev = { page: page - 1, limit };
+    
+    res.status(200).json({ success: true, count: events.length, pagination, data: events });
+  } catch (error) {
+    next(error);
+  }
+};
