@@ -14,7 +14,7 @@ const { protect } = require('../middleware/auth');
 // Public routes
 router.post('/register', register);
 router.post('/login', login);
-router.post('/forgotPassword', forgotPassword);
+router.put('/forgotPassword', forgotPassword);
 router.put('/resetPassword/:resetToken', resetPassword);
 
 // OTP-based password reset routes
