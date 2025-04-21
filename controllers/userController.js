@@ -124,7 +124,6 @@ exports.getUserBookings = async (req, res, next) => {
 // @access  Private/Organizer
 exports.getUserEvents = async (req, res, next) => {
     try {
-      // Change "Organizer" to "organizer" to match your schema
       const events = await Event.find({ organizer: req.user.id });
       res.status(200).json({ success: true, count: events.length, data: events });
     } catch (error) {
@@ -137,7 +136,8 @@ exports.getUserEvents = async (req, res, next) => {
 // @access  Private/Organizer
 exports.getEventAnalytics = async (req, res, next) => {
   try {
-    const events = await Event.find({ Organizer: req.user.id });
+    // Fixed case inconsistency - changed 'Organizer' to 'organizer'
+    const events = await Event.find({ organizer: req.user.id });
 
     const analytics = await Promise.all(events.map(async (event) => {
       const bookingCount = await Booking.countDocuments({ event: event._id });

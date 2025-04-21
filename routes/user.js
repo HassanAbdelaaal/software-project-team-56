@@ -20,13 +20,12 @@ const { authorize } = require('../middleware/roleCheck');
 router.get('/users/profile', protect, getProfile);
 router.put('/users/profile', protect, updateProfile);
 
-// Create a separate router section specifically for organizer routes
-// Place these BEFORE any routes with :id parameters
-router.get('/organizer/events', protect, authorize('Organizer'), getUserEvents);
-router.get('/organizer/analytics', protect, authorize('Organizer'), getEventAnalytics);
-
 // Standard User Routes
 router.get('/users/bookings', protect, authorize('Standard User'), getUserBookings);
+
+// Organizer Routes - Updated to match the requested paths
+router.get('/users/events', protect, authorize('Organizer'), getUserEvents);
+router.get('/users/events/analytics', protect, authorize('Organizer'), getEventAnalytics);
 
 // Admin Routes
 router.get('/users', protect, authorize('System Admin'), getAllUsers);
