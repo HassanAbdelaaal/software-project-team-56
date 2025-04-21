@@ -66,7 +66,7 @@ exports.getEvents = async (req, res, next) => {
 // @access  Public
 exports.getEvent = async (req, res, next) => {
   try {
-    const event = await Event.findById(req.params.id).populate('organizer', 'name email');
+    const event = await Event.findById(req.params.id).populate('Organizer', 'name email');
     if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
 
     res.status(200).json({ success: true, data: event });

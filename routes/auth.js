@@ -5,7 +5,9 @@ const {
   login, 
   forgotPassword, 
   resetPassword,
-  updatePassword 
+  updatePassword,
+  requestPasswordResetOTP,
+  resetPasswordWithOTP
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
@@ -14,6 +16,10 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.put('/resetPassword/:resetToken', resetPassword);
+
+// OTP-based password reset routes
+router.post('/forgetPassword/request', requestPasswordResetOTP);
+router.put('/forgetPassword/reset', resetPasswordWithOTP);
 
 // Protected routes
 router.put('/updatePassword', protect, updatePassword);

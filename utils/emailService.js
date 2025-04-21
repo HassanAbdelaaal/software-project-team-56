@@ -94,3 +94,36 @@ exports.sendPasswordResetEmail = async (email, resetToken, resetUrl) => {
     html,
   });
 };
+
+/**
+ * Send OTP for password reset
+ * @param {String} email - Recipient email
+ * @param {String} otp - One-time password
+ */
+exports.sendOTP = async (email, otp) => {
+  const subject = 'Password Reset OTP';
+  const text = `You are receiving this email because you (or someone else) has requested a password reset for your account.\n\n
+    Your OTP for password reset is: ${otp}\n\n
+    This OTP will expire in 10 minutes.\n\n
+    If you did not request this, please ignore this email and your password will remain unchanged.`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #333;">Password Reset Request</h2>
+      <p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
+      <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; text-align: center;">
+        <h3 style="margin-top: 0;">Your OTP Code</h3>
+        <p style="font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #4a6ee0;">${otp}</p>
+      </div>
+      <p>This OTP will expire in <strong>10 minutes</strong>.</p>
+      <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
+    </div>
+  `;
+
+  await this.sendEmail({
+    to: email,
+    subject,
+    text,
+    html,
+  });
+};
