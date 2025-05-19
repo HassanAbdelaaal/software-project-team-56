@@ -8,7 +8,8 @@ const {
   confirmBooking,
   cancelBooking,
   deleteBooking,
-  checkAvailability
+  checkAvailability,
+  getMyBookings  // Added this import
 } = require('../controllers/bookingController');
 
 const { protect } = require('../middleware/auth');
@@ -22,6 +23,9 @@ router.post('/', protect, createBooking);
 router.get('/:id', protect, getBooking);
 router.put('/:id/confirm', protect, authorize('System Admin'), confirmBooking);
 router.put('/:id/cancel', protect, cancelBooking);
+
+// This route should come BEFORE the '/' route to prevent conflicts
+router.get('/my', protect, getMyBookings);
 
 // Admin routes
 router.get('/', protect, authorize('System Admin'), getAllBookings);
