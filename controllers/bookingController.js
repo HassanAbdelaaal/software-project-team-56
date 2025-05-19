@@ -116,6 +116,27 @@ exports.getBooking = async (req, res, next) => {
   }
 };
 
+// @desc    Get bookings for current user
+// @route   GET /api/v1/bookings/my
+// @access  Private
+exports.getMyBookings = async (req, res, next) => {
+  try {
+    const bookings = await Booking.find({ user: req.user.id })
+      .populate({
+        path: 'event',
+        select: 'title date location providerName ticketPrice'
+      });
+
+    res.status(200).json({
+      success: true,
+      data: bookings
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 // @desc    Update booking status (confirm)
 // @route   PUT /api/v1/bookings/:id/confirm
 // @access  Private/Admin

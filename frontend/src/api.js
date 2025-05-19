@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api/v1',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -123,6 +123,38 @@ export const updateUserProfile = async (profileData) => {
     throw error;
   }
 };
+
+export const getBookingById = async (bookingId) => {
+  try {
+    const response = await api.get(`/bookings/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cancelBooking = async (bookingId) => {
+  const response = await api.put(`/bookings/${bookingId}/cancel`);
+  return response.data;
+};
+
+
+
+// api.js or wherever you define fetchMyBookings
+export const fetchMyBookings = async (userId) => {
+  try {
+    const response = await fetch(`/api/bookings/user/${userId}`); // Adjust the URL to match your backend route
+    if (!response.ok) throw new Error('Failed to fetch bookings');
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+
+
+
 
 export const updateUserSettings = async (settings) => {
   try {
