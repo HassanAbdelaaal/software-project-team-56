@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
+import { NavLink } from 'react-router-dom';
+
 
 const Navbar = () => {
   const { currentUser, isAdmin, logout } = useAuth();
@@ -39,8 +41,8 @@ const Navbar = () => {
         <div className="nav-links">
           {currentUser ? (
             <>
-              <Link to="/dashboard" className={isActive('/dashboard') ? 'active' : ''}>Dashboard</Link>
-              <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
+           <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
+            <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
               {isAdmin && (
                 <>
                   <Link to="/admin/dashboard" className={isActive('/admin/dashboard') ? 'active' : ''}>Admin</Link>

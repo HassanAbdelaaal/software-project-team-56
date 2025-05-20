@@ -50,10 +50,11 @@ const ForgotPassword = () => {
       setLoading(true);
       setError('');
       
+      // Send email and OTP to verify endpoint
       await verifyResetCode(email, otp);
       
       setMessage('OTP verified successfully');
-      setStep(3);
+      setStep(3); // Move to password reset step
     } catch (err) {
       setError(err.message || 'Invalid OTP');
     } finally {

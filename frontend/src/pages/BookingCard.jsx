@@ -73,7 +73,7 @@ const BookingCard = ({ booking, onStatusChange }) => {
 
   // Standardize status display
   const displayStatus = () => {
-    if (!booking.status) return 'Pending';
+    if (!booking.status) return 'confirmed';
     
     // Ensure first letter is capitalized and the rest is lowercase
     return booking.status.charAt(0).toUpperCase() + booking.status.slice(1).toLowerCase();
