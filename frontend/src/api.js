@@ -133,28 +133,26 @@ export const getBookingById = async (bookingId) => {
   }
 };
 
+// Fixed cancel booking function
 export const cancelBooking = async (bookingId) => {
-  const response = await api.put(`/bookings/${bookingId}/cancel`);
-  return response.data;
-};
-
-
-
-// api.js or wherever you define fetchMyBookings
-export const fetchMyBookings = async (userId) => {
   try {
-    const response = await fetch(`/api/bookings/user/${userId}`); // Adjust the URL to match your backend route
-    if (!response.ok) throw new Error('Failed to fetch bookings');
-    return await response.json();
-  } catch (err) {
-    console.error(err);
-    throw err;
+    const response = await api.put(`/bookings/${bookingId}/cancel`);
+    return response.data;
+  } catch (error) {
+    console.error('Error canceling booking:', error);
+    throw error;
   }
 };
 
-
-
-
+export const fetchMyBookings = async () => {
+  try {
+    const response = await api.get('/bookings/my');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    throw error;
+  }
+};
 
 export const updateUserSettings = async (settings) => {
   try {

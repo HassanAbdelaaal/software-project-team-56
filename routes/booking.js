@@ -9,7 +9,7 @@ const {
   cancelBooking,
   deleteBooking,
   checkAvailability,
-  getMyBookings  // Added this import
+  getMyBookings
 } = require('../controllers/bookingController');
 
 const { protect } = require('../middleware/auth');
@@ -18,14 +18,14 @@ const { authorize } = require('../middleware/roleCheck');
 // Public routes
 router.get('/check-availability/:eventId', checkAvailability);
 
-// Protected routes
+// Protected routes - Specific routes first
+router.get('/my', protect, getMyBookings);  // This route MUST come before '/:id'
+
+// Routes with path parameters
 router.post('/', protect, createBooking);
 router.get('/:id', protect, getBooking);
 router.put('/:id/confirm', protect, authorize('System Admin'), confirmBooking);
 router.put('/:id/cancel', protect, cancelBooking);
-
-// This route should come BEFORE the '/' route to prevent conflicts
-router.get('/my', protect, getMyBookings);
 
 // Admin routes
 router.get('/', protect, authorize('System Admin'), getAllBookings);
