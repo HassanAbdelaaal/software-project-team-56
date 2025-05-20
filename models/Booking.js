@@ -18,14 +18,14 @@ const BookingSchema = new mongoose.Schema({
   },
   totalPrice: { 
     type: Number, 
-    required: true,
+    required: false,
     min: [0, 'Total price cannot be negative'], // Ensure price is non-negative
   },
   // Add status field back to track booking status
   status: {
     type: String,
     enum: ['Pending', 'Confirmed', 'Cancelled'],
-    default: 'Pending'
+    default: 'confirmed'
   }
 }, { timestamps: true });
 

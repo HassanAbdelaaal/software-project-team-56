@@ -7,6 +7,7 @@ const {
   resetPassword,
   updatePassword,
   requestPasswordResetOTP,
+  verifyOTP,
   resetPasswordWithOTP
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
@@ -19,6 +20,7 @@ router.put('/resetPassword/:resetToken', resetPassword);
 
 // OTP-based password reset routes
 router.post('/forgetPassword/request', requestPasswordResetOTP);
+router.post('/forgetPassword/verify', verifyOTP); // New route for OTP verification
 router.put('/forgetPassword/reset', resetPasswordWithOTP);
 
 // Protected routes

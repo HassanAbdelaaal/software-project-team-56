@@ -87,7 +87,8 @@ export const forgotPassword = async (email) => {
 
 export const verifyOtp = async (otpData) => {
   try {
-    const response = await api.post('/auth/forgotPassword/verify', otpData);
+    // Change to POST /forgetPassword/verify
+    const response = await api.post('/forgetPassword/verify', otpData);
     return response.data;
   } catch (error) {
     throw error;
@@ -96,7 +97,7 @@ export const verifyOtp = async (otpData) => {
 
 export const resetPasswordWithOTP = async (resetData) => {
   try {
-    const response = await api.put('/forgetPassword/request', resetData);
+    const response = await api.put('/forgetPassword/reset', resetData);
     return response.data;
   } catch (error) {
     throw error;

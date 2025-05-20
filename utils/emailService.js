@@ -11,12 +11,29 @@ const config = require('../config/config');
  */
 exports.sendEmail = async (options) => {
   try {
-    // In development/testing, use ethereal.email for testing
-    // In production, configure real email service credentials
     let transporter;
     
-    if (process.env.NODE_ENV === 'production') {
-      // Configure production email provider
+    // Check if real email should be used (regardless of environment)
+    if (process.env.USE_REAL_EMAIL === 'true') {
+      // Configure real email provider (works in any environment)
+      transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: process.env.EMAIL_SECURE === 'true',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+        tls: {
+          // Do not fail on invalid certs
+          rejectUnauthorized: false
+        },
+        debug: true, // Enable debugging
+        logger: true // Log information to the console
+      });
+      console.log('Using real email service:', process.env.EMAIL_HOST);
+    } else if (process.env.NODE_ENV === 'production') {
+      // Configure production email provider as fallback
       transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
@@ -27,7 +44,7 @@ exports.sendEmail = async (options) => {
         },
       });
     } else {
-      // Use ethereal.email for development/testing
+      // Use ethereal.email for development/testing if real email not requested
       const testAccount = await nodemailer.createTestAccount();
       
       transporter = nodemailer.createTransport({
@@ -43,7 +60,7 @@ exports.sendEmail = async (options) => {
 
     // Email message options
     const message = {
-      from: options.from || config.email.from,
+      from: options.from || config.email.from || process.env.EMAIL_FROM,
       to: options.to,
       subject: options.subject,
       text: options.text,
@@ -53,9 +70,11 @@ exports.sendEmail = async (options) => {
     // Send email
     const info = await transporter.sendMail(message);
 
-    // Log email URL for development environment
-    if (process.env.NODE_ENV !== 'production') {
+    // Log email URL for development environment with ethereal
+    if (process.env.NODE_ENV !== 'production' && process.env.USE_REAL_EMAIL !== 'true') {
       console.log(`Email preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    } else {
+      console.log(`Email sent to: ${options.to}`);
     }
 
     return info;
