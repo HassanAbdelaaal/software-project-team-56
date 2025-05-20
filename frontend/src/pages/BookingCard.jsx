@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { cancelBooking } from '../api';
 import './Profile.css';
+import './BookingCard.css';  // Make sure this points to the right location
 
 const BookingCard = ({ booking, onStatusChange }) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
@@ -32,12 +33,16 @@ const BookingCard = ({ booking, onStatusChange }) => {
       
       if (response && response.success) {
         toast.success('Booking cancelled successfully');
-        onStatusChange(booking._id, 'Cancelled');
+        // Update the booking status in the UI
+        if (onStatusChange) {
+          onStatusChange(booking._id, 'Cancelled');
+        }
       } else {
         toast.error(response?.message || 'Failed to cancel booking');
       }
     } catch (error) {
       toast.error(error.message || 'Failed to cancel booking');
+      console.error('Cancel booking error:', error);
     } finally {
       setIsProcessing(false);
       setIsConfirmingCancel(false);
@@ -45,13 +50,16 @@ const BookingCard = ({ booking, onStatusChange }) => {
   };
 
   const getStatusBadgeClass = () => {
-    const status = booking.status.toLowerCase();
+    // Convert status to lowercase for consistency
+    const status = booking.status?.toLowerCase() || 'confirmed';
+    
     switch (status) {
       case 'confirmed': return 'status-confirmed';
       case 'pending': return 'status-pending';
       case 'cancelled': return 'status-cancelled';
-      case 'completed': return 'status-completed';
-      default: return '';
+      // For backward compatibility
+      case 'canceled': return 'status-cancelled';
+      default: return 'confirmed';
     }
   };
 
@@ -63,15 +71,27 @@ const BookingCard = ({ booking, onStatusChange }) => {
     </svg>
   );
 
+  // Standardize status display
+  const displayStatus = () => {
+    if (!booking.status) return 'Pending';
+    
+    // Ensure first letter is capitalized and the rest is lowercase
+    return booking.status.charAt(0).toUpperCase() + booking.status.slice(1).toLowerCase();
+  };
+
+  // Check if booking is already cancelled (case insensitive)
+  const isCancelled = booking.status?.toLowerCase() === 'cancelled' || 
+                       booking.status?.toLowerCase() === 'canceled';
+
   return (
-    <div className={`booking-card ${booking.status.toLowerCase() === 'cancelled' ? 'cancelled' : ''}`}>
+    <div className={`booking-card ${isCancelled ? 'cancelled' : ''}`}>
       <div className="booking-header">
         <div className="booking-service">
           <ServiceIcon />
           <h3>{booking?.event?.title || 'Service'}</h3>
         </div>
         <div className={`booking-status ${getStatusBadgeClass()}`}>
-          {booking.status.charAt(0).toUpperCase() + booking.status.slice(1).toLowerCase()}
+          {displayStatus()}
         </div>
       </div>
 
@@ -115,7 +135,7 @@ const BookingCard = ({ booking, onStatusChange }) => {
           View Details
         </Link>
 
-        {isUpcoming && booking.status.toLowerCase() !== 'cancelled' && !isConfirmingCancel && (
+        {isUpcoming && !isCancelled && !isConfirmingCancel && (
           <button
             className="booking-action-button cancel"
             onClick={() => setIsConfirmingCancel(true)}

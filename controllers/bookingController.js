@@ -38,7 +38,7 @@ exports.createBooking = async (req, res, next) => {
       user: req.user.id,
       event: eventId,
       ticketsBooked,
-      totalPrice: event.ticketPrice * ticketsBooked,
+      // The model's pre-save middleware will calculate these values
       status: 'Pending'
     });
 
@@ -136,7 +136,6 @@ exports.getMyBookings = async (req, res, next) => {
   }
 };
 
-
 // @desc    Update booking status (confirm)
 // @route   PUT /api/v1/bookings/:id/confirm
 // @access  Private/Admin
@@ -156,7 +155,8 @@ exports.confirmBooking = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: booking
+      data: booking,
+      message: 'Booking successfully confirmed'
     });
   } catch (error) {
     next(error);
@@ -185,13 +185,21 @@ exports.cancelBooking = async (req, res, next) => {
       });
     }
 
+    // Check if booking is already cancelled
+    if (booking.status === 'Cancelled') {
+      return res.status(400).json({
+        success: false,
+        message: 'This booking is already cancelled'
+      });
+    }
+
     // Use the model method to cancel booking
     await booking.cancelBooking();
 
     res.status(200).json({
       success: true,
       data: booking,
-      message: 'Booking successfully canceled'
+      message: 'Booking successfully cancelled'
     });
   } catch (error) {
     next(error);
