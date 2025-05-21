@@ -203,8 +203,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Context value
+  const isAdmin = currentUser?.role === 'System Admin';
+  const isOrganizer = currentUser?.role === 'Organizer';
+  
   const value = {
     currentUser,
+    isAdmin,
+    isOrganizer,
     loading,
     authError,
     login,
@@ -216,6 +221,7 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     updateSettings
   };
+  
 
   return (
     <AuthContext.Provider value={value}>

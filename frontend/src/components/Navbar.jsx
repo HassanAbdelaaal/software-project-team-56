@@ -1,12 +1,10 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
-import { NavLink } from 'react-router-dom';
-
 
 const Navbar = () => {
-  const { currentUser, isAdmin, logout } = useAuth();
+  const { currentUser, isAdmin, isOrganizer, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,18 +35,26 @@ const Navbar = () => {
             ticketsystem
           </Link>
         </div>
-        
+
         <div className="nav-links">
           {currentUser ? (
             <>
-           <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
-            <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
+              <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
+              <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
+
+              {isOrganizer && (
+                <Link to="/organizer/events/new" className={isActive('/organizer/events/new') ? 'active' : ''}>
+                  Create Event
+                </Link>
+              )}
+
               {isAdmin && (
                 <>
                   <Link to="/admin/dashboard" className={isActive('/admin/dashboard') ? 'active' : ''}>Admin</Link>
                   <Link to="/admin/users" className={isActive('/admin/users') ? 'active' : ''}>Users</Link>
                 </>
               )}
+
               <button onClick={handleLogout}>Logout</button>
             </>
           ) : (
