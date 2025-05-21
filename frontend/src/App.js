@@ -2,7 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import EventsPage from './pages/EventsPage';
+import EventsPage from './pages/EventsPage';
+import EventDetails from './pages/EventDetails'; // Added EventDetails import
+import EventForm from './pages/organizer/EventForm';
+
 
 
 // Auth Components
@@ -36,6 +39,8 @@ function App() {
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:eventId" element={<EventDetails />} /> {/* Added Event Details Route */}
               
               {/* Protected Routes - Regular Users */}
               <Route path="/dashboard" element={
@@ -65,9 +70,21 @@ function App() {
                   <UserManagement />
                 </ProtectedRoute>
               } />
+
+              <Route path="/organizer/events/new" element={
+                <ProtectedRoute>
+                  <EventForm />
+                </ProtectedRoute>
+              } />
+              <Route path="/organizer/events/:eventId/edit" element={
+                <ProtectedRoute>
+                  <EventForm />
+                </ProtectedRoute>
+              } />
+
               
               {/* Default Route */}
-              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/" element={<Navigate to="/events" />} />
             </Routes>
           </div>
           <ToastContainer position="top-right" autoClose={3000} />

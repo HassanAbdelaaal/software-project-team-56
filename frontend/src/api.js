@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5002/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -163,5 +163,111 @@ export const updateUserSettings = async (settings) => {
     throw error;
   }
 };
+
+/* ------------------------- */
+/* Events endpoints          */
+/* ------------------------- */
+
+export const fetchEvents = async () => {
+  try {
+    const response = await api.get('/events');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    throw error;
+  }
+};
+
+export const getEventById = async (eventId) => {
+  try {
+    const response = await api.get(`/events/${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event details:', error);
+    throw error;
+  }
+};
+
+// Alias for getEventById to match our new EventDetails component
+export const fetchEventById = getEventById;
+
+export const createEvent = async (eventData) => {
+  try {
+    const response = await api.post('/events', eventData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating event:', error);
+    throw error;
+  }
+};
+
+export const updateEvent = async (eventId, eventData) => {
+  try {
+    const response = await api.put(`/events/${eventId}`, eventData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw error;
+  }
+};
+
+export const deleteEvent = async (eventId) => {
+  try {
+    const response = await api.delete(`/events/${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw error;
+  }
+};
+
+export const fetchMyEvents = async () => {
+  try {
+    const response = await api.get('/events/user/my-events');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching my events:', error);
+    throw error;
+  }
+};
+
+export const getEventAnalytics = async () => {
+  try {
+    const response = await api.get('/events/organizer/analytics');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event analytics:', error);
+    throw error;
+  }
+};
+
+export const createBooking = async (bookingData) => {
+  try {
+    const response = await api.post('/bookings', bookingData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    throw error;
+  }
+};
+
+// New function for purchasing tickets - wrapper around createBooking for consistency with EventDetails component
+export const purchaseTickets = async (eventId, purchaseData) => {
+  try {
+    // Adapt the existing createBooking function for ticket purchases
+    const bookingData = {
+      eventId,
+      numberOfTickets: purchaseData.ticketCount,
+      ...purchaseData
+    };
+    return await createBooking(bookingData);
+  } catch (error) {
+    console.error('Error purchasing tickets:', error);
+    throw error;
+  }
+};
+
+
+
 
 export default api;
