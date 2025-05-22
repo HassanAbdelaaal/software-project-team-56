@@ -1,115 +1,115 @@
 /* Dashboard.css */
 
 .dashboard-container {
-    padding: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .dashboard-header {
-    margin-bottom: 2rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-welcome {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.chart-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.chart-wrapper {
+  height: 300px;
+  width: 100%;
+}
+
+/* Visual indicators for different stat cards */
+.stat-card.visits {
+  border-left: 4px solid #4299e1;
+}
+
+.stat-card.actions {
+  border-left: 4px solid #48bb78;
+}
+
+.stat-card.completions {
+  border-left: 4px solid #ed8936;
+}
+
+/* Loading state */
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.125rem;
+  color: #718096;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-stats {
+    grid-template-columns: 1fr;
   }
   
   .dashboard-welcome {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 0.5rem;
-  }
-  
-  .dashboard-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-  
-  .stat-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-  }
-  
-  .stat-title {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #718096;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
   }
   
   .stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2d3748;
-  }
-  
-  .chart-container {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-  }
-  
-  .chart-header {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
   }
   
   .chart-wrapper {
-    height: 300px;
-    width: 100%;
+    height: 250px;
   }
-  
-  /* Visual indicators for different stat cards */
-  .stat-card.visits {
-    border-left: 4px solid #4299e1;
-  }
-  
-  .stat-card.actions {
-    border-left: 4px solid #48bb78;
-  }
-  
-  .stat-card.completions {
-    border-left: 4px solid #ed8936;
-  }
-  
-  /* Loading state */
-  .dashboard-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
-    font-size: 1.125rem;
-    color: #718096;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .dashboard-stats {
-      grid-template-columns: 1fr;
-    }
-    
-    .dashboard-welcome {
-      font-size: 1.5rem;
-    }
-    
-    .stat-value {
-      font-size: 1.75rem;
-    }
-    
-    .chart-wrapper {
-      height: 250px;
-    }
-  }
+}

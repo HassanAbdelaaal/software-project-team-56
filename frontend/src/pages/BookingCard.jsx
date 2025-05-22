@@ -90,9 +90,6 @@ const BookingCard = ({ booking, onStatusChange }) => {
           <ServiceIcon />
           <h3>{booking?.event?.title || 'Service'}</h3>
         </div>
-        <div className={`booking-status ${getStatusBadgeClass()}`}>
-          {displayStatus()}
-        </div>
       </div>
 
       <div className="booking-details">
