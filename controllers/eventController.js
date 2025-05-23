@@ -16,9 +16,8 @@ exports.createEvent = async (req, res, next) => {
     res.status(201).json({ success: true, data: event });
   } catch (error) {
     next(error);
-  }
+  }
 };
-
 
 // @desc Get all events
 // @route GET /api/v1/events
@@ -34,7 +33,7 @@ exports.getEvents = async (req, res, next) => {
       reqQuery.status = 'active';
     }
 
-    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => '$${match}');
+    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
     let query = Event.find(JSON.parse(queryStr)).populate('organizer', 'name email');
 
     if (req.query.select) {
@@ -66,7 +65,7 @@ exports.getEvents = async (req, res, next) => {
 // @access  Public
 exports.getEvent = async (req, res, next) => {
   try {
-    const event = await Event.findById(req.params.id).populate('Organizer', 'name email');
+    const event = await Event.findById(req.params.id).populate('organizer', 'name email');
     if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
 
     res.status(200).json({ success: true, data: event });
@@ -83,7 +82,7 @@ exports.updateEvent = async (req, res, next) => {
     let event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
 
-    if (event.organizer.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (event.organizer.toString() !== req.user.id && req.user.role !== 'System Admin') {
       return res.status(401).json({ success: false, message: 'Unauthorized to update this event' });
     }
 
@@ -102,7 +101,7 @@ exports.deleteEvent = async (req, res, next) => {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
 
-    if (event.organizer.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (event.organizer.toString() !== req.user.id && req.user.role !== 'System Admin') {
       return res.status(401).json({ success: false, message: 'Unauthorized to delete this event' });
     }
 
@@ -136,13 +135,12 @@ exports.approveEvent = async (req, res, next) => {
   }
 };
 
-
 // @desc    Get events for current organizer
-// @route   GET /api/v1/events/my-events
+// @route   GET /api/v1/events/user/my-events
 // @access  Private (Organizers only)
 exports.getMyEvents = async (req, res, next) => {
   try {
-    if (req.user.role !== 'organizer') {
+    if (req.user.role !== 'Organizer' && req.user.role !== 'System Admin') {
       return res.status(403).json({ success: false, message: 'Only organizers can access their events' });
     }
 
@@ -153,9 +151,12 @@ exports.getMyEvents = async (req, res, next) => {
   }
 };
 
+// @desc    Get event analytics for organizer
+// @route   GET /api/v1/events/organizer/analytics
+// @access  Private (Organizers only)
 exports.getEventAnalytics = async (req, res, next) => {
   try {
-    if (req.user.role !== 'organizer') {
+    if (req.user.role !== 'Organizer' && req.user.role !== 'System Admin') {
       return res.status(403).json({ success: false, message: 'Only organizers can view analytics' });
     }
 
@@ -217,7 +218,7 @@ exports.getAllEvents = async (req, res, next) => {
     const removeFields = ['select', 'sort', 'page', 'limit'];
     removeFields.forEach(param => delete reqQuery[param]);
     
-    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => '$${match}');
+    let queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
     let query = Event.find(JSON.parse(queryStr)).populate('organizer', 'name email');
     
     if (req.query.select) {
