@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5002/api/v1',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -263,6 +263,83 @@ export const purchaseTickets = async (eventId, purchaseData) => {
     return await createBooking(bookingData);
   } catch (error) {
     console.error('Error purchasing tickets:', error);
+    throw error;
+  }
+};
+
+
+/* ------------------------- */
+/* User Management endpoints */
+/* ------------------------- */
+
+export const fetchUsers = async () => {
+  try {
+    const response = await api.get('/users');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+export const updateUserRole = async (userId, role) => {
+  try {
+    const response = await api.put(`/users/${userId}`, { role });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId) => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+};
+
+// Add these functions to your existing api.js file
+
+/* ------------------------- */
+/* Admin Event Management    */
+/* ------------------------- */
+
+export const fetchAllEvents = async (params = {}) => {
+  try {
+    const queryString = new URLSearchParams(params).toString();
+    const url = queryString ? `/events/all?${queryString}` : '/events/all';
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all events:', error);
+    throw error;
+  }
+};
+
+export const approveEvent = async (eventId, status) => {
+  try {
+    const response = await api.put(`/events/${eventId}/approve`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Error approving/updating event:', error);
+    throw error;
+  }
+};
+
+/* ------------------------- */
+/* Admin Stats (Optional)    */
+/* ------------------------- */
+
+export const fetchAdminStats = async () => {
+  try {
+    const response = await api.get('/admin/stats');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching admin stats:', error);
     throw error;
   }
 };
