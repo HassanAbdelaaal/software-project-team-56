@@ -5,8 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import EventsPage from './pages/EventsPage';
 import EventDetails from './pages/EventDetails'; // Added EventDetails import
 import EventForm from './pages/organizer/EventForm';
-
-
+import EventAnalytics from './pages/organizer/EventAnalytics';
 
 // Auth Components
 import LoginForm from './components/auth/LoginForm';
@@ -71,6 +70,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
+              {/* Organizer Routes */}
               <Route path="/organizer/events/new" element={
                 <ProtectedRoute>
                   <EventForm />
@@ -81,8 +81,12 @@ function App() {
                   <EventForm />
                 </ProtectedRoute>
               } />
+              <Route path="/organizer/analytics" element={
+                <ProtectedRoute>
+                  <EventAnalytics />
+                </ProtectedRoute>
+              } />
 
-              
               {/* Default Route */}
               <Route path="/" element={<Navigate to="/events" />} />
             </Routes>

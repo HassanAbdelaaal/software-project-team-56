@@ -43,9 +43,14 @@ const Navbar = () => {
               <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
 
               {isOrganizer && (
-                <Link to="/organizer/events/new" className={isActive('/organizer/events/new') ? 'active' : ''}>
-                  Create Event
-                </Link>
+                <>
+                  <Link to="/organizer/events/new" className={isActive('/organizer/events/new') ? 'active' : ''}>
+                    Create Event
+                  </Link>
+                  <Link to="/organizer/analytics" className={isActive('/organizer/analytics') ? 'active' : ''}>
+                    Analytics
+                  </Link>
+                </>
               )}
 
               {isAdmin && (
