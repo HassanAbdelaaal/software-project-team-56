@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchEventById } from '../api';
+import { fetchEventById, createBooking } from '../api';
 import { toast } from 'react-toastify';
 import './EventDetails.css';
 
@@ -9,6 +9,7 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
+  const [isBooking, setIsBooking] = useState(false); // New state for booking process
 
   useEffect(() => {
     const getEventDetails = async () => {
@@ -59,10 +60,50 @@ const EventDetails = () => {
     return (event.ticketPrice * ticketCount).toFixed(2);
   };
 
-  // Handle ticket purchase
-  const handlePurchase = () => {
-    toast.success(`Successfully reserved ${ticketCount} ticket(s) for ${event.title}`);
-    // In a real application, you would make an API call here to reserve the tickets
+  // Handle ticket purchase - Updated to use real API
+  const handlePurchase = async () => {
+    try {
+      setIsBooking(true);
+      
+      // Prepare booking data according to your API structure
+      const bookingData = {
+        eventId: eventId,
+        ticketsBooked: ticketCount
+      };
+
+      // Call the createBooking API
+      const response = await createBooking(bookingData);
+      
+      if (response.success) {
+        toast.success(`Successfully booked ${ticketCount} ticket(s) for ${event.title}!`);
+        
+        // Update the event's remaining tickets locally to reflect the change
+        setEvent(prevEvent => ({
+          ...prevEvent,
+          remainingTickets: prevEvent.remainingTickets - ticketCount
+        }));
+        
+        // Reset ticket count to 1
+        setTicketCount(1);
+      } else {
+        toast.error(response.message || 'Failed to book tickets');
+      }
+    } catch (error) {
+      console.error('Error booking tickets:', error);
+      
+      // Handle different error scenarios
+      if (error.status === 401) {
+        toast.error('Please log in to book tickets');
+      } else if (error.status === 400) {
+        toast.error(error.message || 'Invalid booking request');
+      } else if (error.status === 404) {
+        toast.error('Event not found');
+      } else {
+        toast.error(error.message || 'Failed to book tickets. Please try again.');
+      }
+    } finally {
+      setIsBooking(false);
+    }
   };
 
   if (loading) {
@@ -216,7 +257,7 @@ const EventDetails = () => {
                       <button 
                         className="quantity-btn minus"
                         onClick={() => setTicketCount(Math.max(1, ticketCount - 1))}
-                        disabled={ticketCount <= 1}
+                        disabled={ticketCount <= 1 || isBooking}
                       >
                         <i className="fas fa-minus"></i>
                       </button>
@@ -227,11 +268,12 @@ const EventDetails = () => {
                         max={event.remainingTickets} 
                         value={ticketCount} 
                         onChange={(e) => setTicketCount(Math.min(event.remainingTickets, Math.max(1, parseInt(e.target.value) || 1)))}
+                        disabled={isBooking}
                       />
                       <button 
                         className="quantity-btn plus"
                         onClick={() => setTicketCount(Math.min(event.remainingTickets, ticketCount + 1))}
-                        disabled={ticketCount >= event.remainingTickets}
+                        disabled={ticketCount >= event.remainingTickets || isBooking}
                       >
                         <i className="fas fa-plus"></i>
                       </button>
@@ -248,9 +290,16 @@ const EventDetails = () => {
                   <button 
                     className="purchase-btn"
                     onClick={handlePurchase}
-                    disabled={isSoldOut || !isUpcoming}
+                    disabled={isSoldOut || !isUpcoming || isBooking}
                   >
-                    {event.ticketPrice > 0 ? 'Purchase Tickets' : 'Register for Free'}
+                    {isBooking ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i>
+                        {event.ticketPrice > 0 ? ' Booking...' : ' Registering...'}
+                      </>
+                    ) : (
+                      event.ticketPrice > 0 ? 'Purchase Tickets' : 'Register for Free'
+                    )}
                   </button>
                 </>
               )}
