@@ -60,6 +60,11 @@ const EventDetails = () => {
     return (event.ticketPrice * ticketCount).toFixed(2);
   };
 
+  // Get the correct image URL - handle different property names
+  const getEventImage = (event) => {
+    return event.imageUrl || event.image || null;
+  };
+
   // Handle ticket purchase - Updated to use real API
   const handlePurchase = async () => {
     try {
@@ -150,9 +155,20 @@ const EventDetails = () => {
 
         <div className="event-details-content">
           <div className="event-details-main">
-            {event.imageUrl ? (
+            {getEventImage(event) ? (
               <div className="event-full-image">
-                <img src={event.imageUrl} alt={event.title} />
+                <img 
+                  src={getEventImage(event)} 
+                  alt={event.title}
+                  onError={(e) => {
+                    // Fallback if image fails to load
+                    e.target.style.display = 'none';
+                    e.target.nextElementSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="event-placeholder-large" style={{ display: 'none' }}>
+                  <span>{event.title.charAt(0)}</span>
+                </div>
               </div>
             ) : (
               <div className="event-placeholder-large">

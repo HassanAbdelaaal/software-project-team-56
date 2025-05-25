@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchEvents } from '../api';
 import EventCard from '../components/EventCard';
 import { toast } from 'react-toastify';
@@ -13,6 +14,7 @@ const EventsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getEvents = async () => {
@@ -31,6 +33,14 @@ const EventsPage = () => {
     getEvents();
   }, []);
 
+  const handleBookNow = (eventId) => {
+    navigate(`/events/${eventId}?action=book`);
+  };
+
+  const handleMoreInfo = (eventId) => {
+    navigate(`/events/${eventId}`);
+  };
+
   const categories = ['all', ...new Set(events.map(event => event.category).filter(Boolean))];
 
   const filteredEvents = events.filter(event => {
@@ -41,18 +51,19 @@ const EventsPage = () => {
     
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
     
-    if (filter === 'all') return matchesSearch && matchesCategory;
-    if (filter === 'upcoming') {
-      return matchesSearch && matchesCategory && new Date(event.date) > new Date();
+    // Filter by the main filter tabs
+    let matchesFilter = true;
+    if (filter === 'Music') {
+      matchesFilter = event.category === 'Music';
+    } else if (filter === 'Sports') {
+      matchesFilter = event.category === 'Sports';
     }
-    if (filter === 'free') {
-      return matchesSearch && matchesCategory && (!event.ticketPrice || event.ticketPrice === 0);
-    }
+    // 'all' filter shows all events regardless of category from filter tabs
     
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && matchesFilter;
   });
 
-  const featuredEvents = events.slice(0, 3); // top 3 events for carousel
+  const featuredEvents = events.slice(0, 3);
 
   const sliderSettings = {
     dots: true,
@@ -61,142 +72,193 @@ const EventsPage = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 2000,
     arrows: true,
-    pauseOnHover: true
+    pauseOnHover: true,
+    fade: true,
+    cssEase: 'cubic-bezier(0.7, 0, 0.3, 1)'
   };
 
   return (
     <div className="events-page">
-      <div className="events-hero">
-        <div className="hero-content">
-          <h1>Discover Extraordinary Events</h1>
-          <p>Explore and secure your spot at the most exciting gatherings in your area</p>
-          <div className="hero-search-container">
+      {/* Hero Featured Event */}
+      {!loading && featuredEvents.length > 0 && (
+        <div className="hero-featured-section">
+          <Slider {...sliderSettings} className="hero-slider">
+            {featuredEvents.map(event => (
+              <div key={event._id} className="hero-slide">
+                <div className="hero-content">
+                  <div className="hero-left">
+                    <div className="event-meta">
+                      <h1 className="hero-title">{event.title}</h1>
+                      <div className="hero-details">
+                        <span className="hero-date">
+                          {new Date(event.date).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })} | {new Date(event.date).toLocaleTimeString('en-US', { 
+                            hour: 'numeric', 
+                            minute: '2-digit',
+                            hour12: true 
+                          })}
+                        </span>
+                        <span className="hero-location">{event.location}</span>
+                      </div>
+                      <div className="organizer-info">
+                        <span>Organized by</span>
+                        <div className="organizer-logo">other.</div>
+                      </div>
+                      <div className="hero-actions">
+                        <button 
+                          className="book-now-btn"
+                          onClick={() => handleBookNow(event._id)}
+                        >
+                          <i className="fas fa-ticket-alt"></i>
+                          Book Now
+                        </button>
+                        <button 
+                          className="more-info-btn"
+                          onClick={() => handleMoreInfo(event._id)}
+                        >
+                          More Info
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="hero-right">
+                    <div className="hero-image" style={{ backgroundImage: `url(${event.image || '/default-event.jpg'})` }}>
+                      <div className="hero-brand">Cairo</div>
+                      <div className="hero-event-text">
+                        <div className="event-name">{event.title.toUpperCase()}</div>
+                        <div className="event-date-large">
+                          {new Date(event.date).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                          }).toUpperCase()}
+                        </div>
+                        <div className="event-location-large">{event.location.split('-')[1]?.trim().toUpperCase() || 'CAIRO'}</div>
+                        <div className="event-venue">{event.location.split('-')[0]?.trim().toUpperCase()}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
+
+      {/* Hot Events Section */}
+      <div className="hot-events-section">
+        <div className="section-header">
+          <h2 className="section-title">Hot Events</h2>
+          <div className="navigation-arrows">
+            <button className="nav-arrow prev">
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <button className="nav-arrow next">
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div className="hot-events-grid">
+          {filteredEvents.slice(0, 4).map(event => (
+            <EventCard key={event._id} event={event} compact={true} />
+          ))}
+        </div>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="search-filter-section">
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <i className="fas fa-search search-icon"></i>
             <input
               type="text"
               placeholder="Search for events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="hero-search-input"
+              className="search-input"
             />
-            <button className="hero-search-button">
-              <i className="fas fa-search"></i>
-            </button>
           </div>
+        </div>
+
+        <div className="filter-tabs">
+          <button 
+            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All Events
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'Sports' ? 'active' : ''}`}
+            onClick={() => setFilter('Sports')}
+          >
+            Sports
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'Music' ? 'active' : ''}`}
+            onClick={() => setFilter('Music')}
+          >
+            Music
+          </button>
+        </div>
+
+        <div className="category-filter">
+          <select 
+            value={selectedCategory} 
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="category-select"
+          >
+            {categories.map(category => (
+              <option key={category} value={category}>
+                {category === 'all' ? 'All Categories' : category}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {!loading && featuredEvents.length > 0 && (
-        <div className="featured-events-section">
-          <h2 className="section-title">Featured Events</h2>
-          <div className="featured-carousel">
-            <Slider {...sliderSettings}>
-              {featuredEvents.map(event => (
-                <div key={event._id} className="carousel-slide">
-                  <div className="featured-card">
-                    <div className="featured-image" style={{ backgroundImage: `url(${event.imageUrl || '/default-event.jpg'})` }}>
-                      {event.ticketPrice === 0 && <span className="event-badge free-badge">Free</span>}
-                      {new Date(event.date) > new Date() && <span className="event-badge upcoming-badge">Upcoming</span>}
-                    </div>
-                    <div className="featured-content">
-                      <h3>{event.title}</h3>
-                      <p className="featured-date">
-                        <i className="far fa-calendar-alt"></i> {new Date(event.date).toLocaleDateString()}
-                      </p>
-                      <p className="featured-location">
-                        <i className="fas fa-map-marker-alt"></i> {event.location}
-                      </p>
-                      <p className="featured-description">{event.description?.substring(0, 120)}...</p>
-                      <button className="view-details-btn">View Details</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
+      {/* Events Results */}
+      <div className="events-results-section">
+        <div className="results-info">
+          <h3 className="results-title">
+            {searchTerm ? `Results for "${searchTerm}"` : 'All Events'}
+          </h3>
+          <span className="results-count">{filteredEvents.length} events found</span>
         </div>
-      )}
-
-      <div className="events-container">
-        <div className="filter-bar">
-          <div className="filter-group">
-            <select 
-              value={filter} 
-              onChange={(e) => setFilter(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Events</option>
-              <option value="upcoming">Upcoming</option>
-              <option value="free">Free Events</option>
-            </select>
-            
-            <select 
-              value={selectedCategory} 
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="category-select"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category === 'all' ? 'All Categories' : category}
-                </option>
-              ))}
-            </select>
+        
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading amazing events...</p>
           </div>
-
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search events..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button className="search-button">
-              <i className="fas fa-search"></i>
+        ) : filteredEvents.length > 0 ? (
+          <div className="events-grid">
+            {filteredEvents.map(event => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        ) : (
+          <div className="no-events">
+            <div className="no-events-icon">
+              <i className="fas fa-calendar-times"></i>
+            </div>
+            <h3>No events found</h3>
+            <p>Try adjusting your search criteria or browse all events</p>
+            <button 
+              className="reset-button" 
+              onClick={() => {
+                setSearchTerm('');
+                setFilter('all');
+                setSelectedCategory('all');
+              }}
+            >
+              Reset Filters
             </button>
           </div>
-        </div>
-
-        <div className="events-results">
-          <div className="results-header">
-            <h2 className="section-title">
-              {searchTerm ? `Results for "${searchTerm}"` : 'All Events'}
-            </h2>
-            <span className="event-count">{filteredEvents.length} events found</span>
-          </div>
-          
-          {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading amazing events...</p>
-            </div>
-          ) : filteredEvents.length > 0 ? (
-            <div className="events-grid">
-              {filteredEvents.map(event => (
-                <EventCard key={event._id} event={event} />
-              ))}
-            </div>
-          ) : (
-            <div className="no-events">
-              <div className="no-events-icon">
-                <i className="fas fa-calendar-times"></i>
-              </div>
-              <h3>No events found</h3>
-              <p>Try adjusting your search criteria or browse all events</p>
-              <button 
-                className="reset-button" 
-                onClick={() => {
-                  setSearchTerm('');
-                  setFilter('all');
-                  setSelectedCategory('all');
-                }}
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

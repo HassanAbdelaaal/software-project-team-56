@@ -87,4 +87,75 @@
   .auth-link a:hover {
     text-decoration: underline;
   }
+
+  /* Add these styles to your AuthForm.css file */
+
+.reset-method-selector {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.method-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.method-button {
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  background-color: #f8f9fa;
+  color: #333;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.method-button:hover {
+  border-color: #007bff;
+  background-color: #e3f2fd;
+}
+
+.method-button.active {
+  border-color: #007bff;
+  background-color: #007bff;
+  color: white;
+}
+
+.method-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  padding: 0 10px;
+  line-height: 1.4;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: #0056b3;
+}
+
+/* Responsive design for method buttons */
+@media (max-width: 480px) {
+  .method-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .method-button {
+    width: 200px;
+  }
+}
   

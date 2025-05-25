@@ -6,6 +6,7 @@ import EventsPage from './pages/EventsPage';
 import EventDetails from './pages/EventDetails'; // Added EventDetails import
 import EventForm from './pages/organizer/EventForm';
 import EventAnalytics from './pages/organizer/EventAnalytics';
+import MyEvents from './pages/organizer/MyEvents';
 
 // Auth Components
 import LoginForm from './components/auth/LoginForm';
@@ -25,21 +26,23 @@ import UserManagement from './pages/admin/UserManagement';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer'; // Added Footer import
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="app">
+        <div className="app min-h-screen flex flex-col">
           <Navbar />
-          <div className="content">
+          <div className="content flex-grow">
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:resetToken" element={<ForgotPassword />} /> {/* Add this line */}
               <Route path="/events" element={<EventsPage />} />
-              <Route path="/events/:eventId" element={<EventDetails />} /> {/* Added Event Details Route */}
+              <Route path="/events/:eventId" element={<EventDetails />} />
               
               {/* Protected Routes - Regular Users */}
               <Route path="/dashboard" element={
@@ -81,6 +84,11 @@ function App() {
                   <EventForm />
                 </ProtectedRoute>
               } />
+              <Route path="/organizer/my-events" element={
+                <ProtectedRoute>
+                  <MyEvents />
+                </ProtectedRoute>
+              } />
               <Route path="/organizer/analytics" element={
                 <ProtectedRoute>
                   <EventAnalytics />
@@ -91,6 +99,7 @@ function App() {
               <Route path="/" element={<Navigate to="/events" />} />
             </Routes>
           </div>
+          <Footer /> {/* Added Footer component */}
           <ToastContainer position="top-right" autoClose={3000} />
         </div>
       </Router>

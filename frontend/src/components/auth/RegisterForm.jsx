@@ -125,7 +125,7 @@ const RegisterForm = () => {
           >
             <option value="Standard User">Standard User</option>
             <option value="organizer">Organizer</option>
-            <option value="admin">System Admin</option>
+            <option value="System Admin">System Admin</option>
           </select>
   
           <button className="auth-button" type="submit" disabled={loading}>

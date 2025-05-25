@@ -346,5 +346,26 @@ export const fetchAdminStats = async () => {
 
 
 
+// Add this function to your existing api.js file
+
+export const forgotPasswordWithEmail = async (email) => {
+  try {
+    const response = await api.put('/forgotPassword', { email });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPasswordWithToken = async (resetToken, password) => {
+  try {
+    const response = await api.put(`/resetPassword/${resetToken}`, { password });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 
 export default api;
