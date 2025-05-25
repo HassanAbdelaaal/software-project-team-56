@@ -36,11 +36,14 @@ function App() {
           <Navbar />
           <div className="content flex-grow">
             <Routes>
+              {/* Default Route - Always show EventsPage first */}
+              <Route path="/" element={<EventsPage />} />
+              
               {/* Public Routes */}
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:resetToken" element={<ForgotPassword />} /> {/* Add this line */}
+              <Route path="/reset-password/:resetToken" element={<ForgotPassword />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:eventId" element={<EventDetails />} />
               
@@ -95,8 +98,8 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* Default Route */}
-              <Route path="/" element={<Navigate to="/events" />} />
+              {/* Catch all route - redirect any unknown routes to events */}
+              <Route path="*" element={<Navigate to="/events" replace />} />
             </Routes>
           </div>
           <Footer /> {/* Added Footer component */}
