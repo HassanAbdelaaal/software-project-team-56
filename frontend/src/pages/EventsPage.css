@@ -5,6 +5,9 @@
   background-color: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   padding-top: 80px; /* Account for fixed header */
+  -webkit-tap-highlight-color: transparent; /* Better touch feedback on mobile */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Hero Featured Section */
@@ -109,6 +112,8 @@
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .book-now-btn:hover {
@@ -126,6 +131,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .more-info-btn:hover {
@@ -248,6 +255,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   color: #6b7280;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .nav-arrow:hover {
@@ -301,6 +310,8 @@
   font-size: 1.1rem;
   background: white;
   transition: all 0.3s ease;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .search-input:focus {
@@ -326,6 +337,8 @@
   transition: all 0.3s ease;
   background: transparent;
   color: #6b7280;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .filter-tab.active {
@@ -346,6 +359,8 @@
   background: white;
   cursor: pointer;
   min-width: 180px;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .category-select:focus {
@@ -445,6 +460,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  touch-action: manipulation; /* Disable double-tap zoom */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .reset-button:hover {
@@ -497,6 +514,7 @@
   .hero-left,
   .hero-right {
     flex: none;
+    width: 100%;
   }
   
   .hero-right {
@@ -505,11 +523,22 @@
   }
   
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.75rem;
+    letter-spacing: -1px;
+  }
+  
+  .hero-slider,
+  .hero-slide {
+    height: auto;
+    min-height: 500px;
   }
   
   .section-title {
     font-size: 2rem;
+  }
+
+  .hero-image {
+    border-radius: 1rem;
   }
 }
 
@@ -519,16 +548,30 @@
   }
   
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
+  }
+  
+  .hero-date,
+  .hero-location {
+    font-size: 1rem;
   }
   
   .search-filter-section {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
   
   .filter-tabs {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .filter-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px; /* Better touch target */
   }
   
   .results-info {
@@ -539,10 +582,23 @@
   
   .events-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .hot-events-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .search-input {
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1rem;
+    min-height: 44px; /* Better touch target */
+  }
+
+  .category-select {
+    width: 100%;
+    min-height: 44px; /* Better touch target */
   }
 }
 
@@ -552,22 +608,89 @@
   }
   
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
+    letter-spacing: -0.5px;
+  }
+  
+  .hero-slider,
+  .hero-slide {
+    min-height: 400px;
   }
   
   .hero-actions {
     flex-direction: column;
     width: 100%;
+    gap: 0.75rem;
   }
   
   .book-now-btn,
   .more-info-btn {
     width: 100%;
     justify-content: center;
+    min-height: 44px; /* Better touch target */
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
   }
   
   .section-header {
     flex-direction: column;
     gap: 1rem;
+    text-align: center;
+  }
+
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .event-name {
+    font-size: 1.75rem;
+  }
+
+  .event-date-large,
+  .event-location-large {
+    font-size: 1.5rem;
+  }
+
+  .event-venue {
+    font-size: 1rem;
+  }
+
+  .hero-event-text {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Prevent sticky hover effects on mobile */
+@media (hover: hover) {
+  .book-now-btn:hover {
+    background: #e6b82e;
+    transform: translateY(-2px);
+  }
+
+  .more-info-btn:hover {
+    background: white;
+    color: #000;
+  }
+
+  .nav-arrow:hover {
+    border-color: #000;
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  .reset-button:hover {
+    background: #374151;
+    transform: translateY(-2px);
+  }
+}
+
+/* Remove hover effects for touch devices */
+@media (hover: none) {
+  .book-now-btn:hover,
+  .more-info-btn:hover,
+  .nav-arrow:hover,
+  .reset-button:hover {
+    transform: none;
   }
 }
