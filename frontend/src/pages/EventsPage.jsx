@@ -13,7 +13,6 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,15 +40,11 @@ const EventsPage = () => {
     navigate(`/events/${eventId}`);
   };
 
-  const categories = ['all', ...new Set(events.map(event => event.category).filter(Boolean))];
-
   const filteredEvents = events.filter(event => {
     const matchesSearch = 
       event.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
       event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.location?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
     
     // Filter by the main filter tabs
     let matchesFilter = true;
@@ -60,7 +55,7 @@ const EventsPage = () => {
     }
     // 'all' filter shows all events regardless of category from filter tabs
     
-    return matchesSearch && matchesCategory && matchesFilter;
+    return matchesSearch && matchesFilter;
   });
 
   const featuredEvents = events.slice(0, 3);
@@ -204,20 +199,6 @@ const EventsPage = () => {
             Music
           </button>
         </div>
-
-        <div className="category-filter">
-          <select 
-            value={selectedCategory} 
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="category-select"
-          >
-            {categories.map(category => (
-              <option key={category} value={category}>
-                {category === 'all' ? 'All Categories' : category}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
       {/* Events Results */}
@@ -252,7 +233,6 @@ const EventsPage = () => {
               onClick={() => {
                 setSearchTerm('');
                 setFilter('all');
-                setSelectedCategory('all');
               }}
             >
               Reset Filters
