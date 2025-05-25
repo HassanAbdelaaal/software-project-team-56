@@ -26,7 +26,7 @@ const LoginForm = () => {
     try {
       setError('');
       await login(email, password);
-      navigate('/dashboard');
+      navigate('/Profile');
     } catch (err) {
       // Auth error is already handled by the context
       setError(authError || 'Login failed');

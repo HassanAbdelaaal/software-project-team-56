@@ -39,11 +39,13 @@ const Navbar = () => {
         <div className="nav-links">
           {currentUser ? (
             <>
-              <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
               <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>Profile</Link>
 
               {isOrganizer && (
                 <>
+                 <Link to="/organizer/my-events" className={isActive('/organizer/my-events') ? 'active' : ''}>
+                    My Events
+                  </Link>
                   <Link to="/organizer/events/new" className={isActive('/organizer/events/new') ? 'active' : ''}>
                     Create Event
                   </Link>
@@ -75,3 +77,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+// <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
