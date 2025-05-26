@@ -75,7 +75,8 @@ label {
 }
 
 .event-form input,
-.event-form textarea {
+.event-form textarea,
+.event-form select {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid #e2e8f0;
@@ -86,7 +87,8 @@ label {
 }
 
 .event-form input:focus,
-.event-form textarea:focus {
+.event-form textarea:focus,
+.event-form select:focus {
   border-color: #2b5876;
   box-shadow: 0 0 0 2px rgba(43, 88, 118, 0.1);
   outline: none;
@@ -98,8 +100,26 @@ label {
   min-height: 100px;
 }
 
+.event-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.event-form select:invalid {
+  color: #a0aec0;
+}
+
 .event-form input::placeholder,
-.event-form textarea::placeholder {
+.event-form textarea::placeholder,
+.event-form select option {
+  color: #4a5568;
+}
+
+.event-form select option:first-child {
   color: #a0aec0;
 }
 

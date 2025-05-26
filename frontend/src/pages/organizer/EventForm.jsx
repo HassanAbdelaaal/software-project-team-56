@@ -196,15 +196,20 @@ const EventForm = () => {
 
             <div className="form-group">
               <label htmlFor="category">Category</label>
-              <input
-                type="text"
+              <select
                 id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                placeholder="Event category"
                 required
-              />
+              >
+                <option value="">Select a category</option>
+                <option value="Music">Music</option>
+                <option value="Sports">Sports</option>
+                <option value="Theater">Theater</option>
+                <option value="Conference">Conference</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
 

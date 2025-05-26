@@ -7,6 +7,7 @@ import EventDetails from './pages/EventDetails'; // Added EventDetails import
 import EventForm from './pages/organizer/EventForm';
 import EventAnalytics from './pages/organizer/EventAnalytics';
 import MyEvents from './pages/organizer/MyEvents';
+import BookingDetails from './pages/BookingDetails'; // Added BookingDetails import
 
 // Auth Components
 import LoginForm from './components/auth/LoginForm';
@@ -61,6 +62,13 @@ function App() {
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              } />
+              
+              {/* Add BookingDetails route */}
+              <Route path="/bookings/:bookingId" element={
+                <ProtectedRoute>
+                  <BookingDetails />
                 </ProtectedRoute>
               } />
               
