@@ -7,8 +7,10 @@ const UpdateProfileForm = ({ onCancel }) => {
   const { currentUser, updateProfile } = useAuth();
   const [name, setName] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pictureInputMethod, setPictureInputMethod] = useState('file'); // 'file' or 'url'
 
   useEffect(() => {
     if (currentUser) {
@@ -25,10 +27,18 @@ const UpdateProfileForm = ({ onCancel }) => {
     const file = e.target.files[0];
     if (file) {
       setProfilePicture(file);
+      setProfilePictureUrl(''); // Clear URL when file is selected
       const reader = new FileReader();
       reader.onloadend = () => setPreviewUrl(reader.result);
       reader.readAsDataURL(file);
     }
+  };
+
+  const handlePictureUrlChange = (e) => {
+    const url = e.target.value;
+    setProfilePictureUrl(url);
+    setProfilePicture(null); // Clear file when URL is entered
+    setPreviewUrl(url);
   };
 
   const handleSubmit = async (e) => {
@@ -39,13 +49,17 @@ const UpdateProfileForm = ({ onCancel }) => {
 
       const formData = new FormData();
       formData.append('name', name);
-      if (profilePicture) {
+      
+      // Handle profile picture based on input method
+      if (pictureInputMethod === 'file' && profilePicture) {
         formData.append('profilePicture', profilePicture);
+      } else if (pictureInputMethod === 'url' && profilePictureUrl) {
+        formData.append('profilePictureUrl', profilePictureUrl);
       }
 
-      const result = await updateProfile(formData); // Calls context method
+      const result = await updateProfile(formData);
 
-      if (result) {
+      if (result && result.data) {
         toast.success('Profile updated successfully');
         onCancel();
       }
@@ -89,18 +103,42 @@ const UpdateProfileForm = ({ onCancel }) => {
           >
             {!previewUrl && getInitials()}
 
-            <input
-              type="file"
-              id="profile-picture"
-              accept="image/*"
-              onChange={handlePictureChange}
-              className="profile-picture-input"
-              style={{ display: 'none' }}
-            />
+            <div className="picture-input-options">
+              <select 
+                value={pictureInputMethod} 
+                onChange={(e) => setPictureInputMethod(e.target.value)}
+                className="picture-input-select"
+              >
+                <option value="file">Upload File</option>
+                <option value="url">Enter URL</option>
+              </select>
+            </div>
 
-            <label htmlFor="profile-picture" className="change-avatar-button">
-              Change
-            </label>
+            {pictureInputMethod === 'file' ? (
+              <>
+                <input
+                  type="file"
+                  id="profile-picture"
+                  accept="image/*"
+                  onChange={handlePictureChange}
+                  className="profile-picture-input"
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="profile-picture" className="change-avatar-button">
+                  Change
+                </label>
+              </>
+            ) : (
+              <div className="url-input-container">
+                <input
+                  type="url"
+                  value={profilePictureUrl}
+                  onChange={handlePictureUrlChange}
+                  className="form-input"
+                  placeholder="Enter image URL"
+                />
+              </div>
+            )}
           </div>
         </div>
 

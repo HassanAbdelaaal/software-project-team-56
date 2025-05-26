@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchEvents } from '../api';
 import EventCard from '../components/EventCard';
+import CountdownTimer from '../components/CountdownTimer';
 import { toast } from 'react-toastify';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -122,7 +123,7 @@ const EventsPage = () => {
                   </div>
                   <div className="hero-right">
                     <div className="hero-image" style={{ backgroundImage: `url(${event.image || '/default-event.jpg'})` }}>
-                      <div className="hero-brand">Cairo</div>
+                      <CountdownTimer eventDate={event.date} />
                       <div className="hero-event-text">
                         <div className="event-name">{event.title.toUpperCase()}</div>
                         <div className="event-date-large">

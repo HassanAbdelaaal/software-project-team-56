@@ -849,6 +849,41 @@ body {
   color: var(--text-muted);
 }
 
+.picture-input-options {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  text-align: center;
+}
+
+.picture-input-select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.url-input-container {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+}
+
+.url-input-container input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
 
 
 

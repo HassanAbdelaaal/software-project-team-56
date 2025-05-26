@@ -41,8 +41,16 @@ const Profile = () => {
             <div className="profile-card">
               <div className="profile-view-header">
                 <div className="avatar-area">
-                  <div className="avatar" tabIndex="0">
-                    {getInitials()}
+                  <div 
+                    className="avatar" 
+                    tabIndex="0"
+                    style={currentUser?.profilePictureUrl ? {
+                      backgroundImage: `url(${currentUser.profilePictureUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    } : {}}
+                  >
+                    {!currentUser?.profilePictureUrl && getInitials()}
                   </div>
                   <div className="user-info">
                     <h1 className="user-name">{currentUser?.name || 'User'}</h1>

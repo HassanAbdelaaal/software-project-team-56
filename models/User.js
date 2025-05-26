@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
     unique: true, 
     match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.']
   },
-  profilePicture: { type: String, default: null }, // Store image URL, default to null
+  profilePictureUrl: { type: String, default: null }, // Store image URL, default to null
   password: { 
     type: String, 
     required: true,

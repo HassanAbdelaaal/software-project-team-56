@@ -118,7 +118,21 @@ export const fetchCurrentUser = async () => {
 
 export const updateUserProfile = async (profileData) => {
   try {
-    const response = await api.put('/users/profile', profileData);
+    // If it's FormData, send it as is. Otherwise, create a new FormData object
+    const formData = profileData instanceof FormData ? profileData : new FormData();
+    
+    // If it's not already FormData, append each field
+    if (!(profileData instanceof FormData)) {
+      Object.keys(profileData).forEach(key => {
+        formData.append(key, profileData[key]);
+      });
+    }
+
+    const response = await api.put('/users/profile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -257,7 +271,7 @@ export const purchaseTickets = async (eventId, purchaseData) => {
     // Adapt the existing createBooking function for ticket purchases
     const bookingData = {
       eventId,
-      numberOfTickets: purchaseData.ticketCount,
+      ticketsBooked: purchaseData.ticketCount,
       ...purchaseData
     };
     return await createBooking(bookingData);
@@ -301,8 +315,6 @@ export const deleteUser = async (userId) => {
     throw error;
   }
 };
-
-// Add these functions to your existing api.js file
 
 /* ------------------------- */
 /* Admin Event Management    */

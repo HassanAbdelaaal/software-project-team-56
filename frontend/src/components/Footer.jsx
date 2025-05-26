@@ -36,19 +36,7 @@ const Footer = () => {
               <li>
                 <a href="#" className="footer-link">
                   <span className="link-icon">❯</span>
-                  Testimonials
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  <span className="link-icon">❯</span>
                   Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  <span className="link-icon">❯</span>
-                  Investors
                 </a>
               </li>
             </ul>
@@ -68,54 +56,10 @@ const Footer = () => {
               <li>
                 <a href="#" className="footer-link">
                   <span className="link-icon">❯</span>
-                  Safety Information
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  <span className="link-icon">❯</span>
-                  Cancellation Options
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  <span className="link-icon">❯</span>
-                  COVID-19 Response
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  <span className="link-icon">❯</span>
-                  Give Feedback
+                  Contact Us
                 </a>
               </li>
             </ul>
-          </div>
-
-          {/* Contact Us Section */}
-          <div className="footer-section">
-            <h3 className="footer-title">Contact Us</h3>
-            <div className="footer-divider"></div>
-            <div className="contact-info">
-              <div className="contact-item">
-                <span className="contact-icon">📍</span>
-                <span>123 Event Plaza, Cairo, Egypt</span>
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">📞</span>
-                <span>+20 123 456 7890</span>
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">✉️</span>
-                <span>info@eventticket.com</span>
-              </div>
-              <div className="social-links">
-                <a href="#" className="social-link facebook">f</a>
-                <a href="#" className="social-link twitter">t</a>
-                <a href="#" className="social-link instagram">📷</a>
-                <a href="#" className="social-link linkedin">in</a>
-              </div>
-            </div>
           </div>
 
           {/* Newsletter Section */}
@@ -123,7 +67,7 @@ const Footer = () => {
             <h3 className="footer-title">Newsletter</h3>
             <div className="footer-divider"></div>
             <p className="newsletter-text">
-              Subscribe for the latest events and special offers.
+              Subscribe for the latest events and offers.
             </p>
             <form onSubmit={handleSubscribe} className="newsletter-form">
               <input
@@ -148,8 +92,8 @@ const Footer = () => {
               © {currentYear} Event Ticketing System. All rights reserved.
             </p>
             <div className="bottom-links">
-              <a href="#" className="bottom-link">Terms of Service</a>
-              <a href="#" className="bottom-link">Privacy Policy</a>
+              <a href="#" className="bottom-link">Terms</a>
+              <a href="#" className="bottom-link">Privacy</a>
             </div>
           </div>
         </div>

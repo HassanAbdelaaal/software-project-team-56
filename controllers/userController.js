@@ -20,10 +20,13 @@ exports.getProfile = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   try {
     const updates = {
-      name: req.body.name,
-      email: req.body.email,
-      profilePicture: req.body.profilePicture
+      name: req.body.name
     };
+
+    // Handle profile picture update
+    if (req.body.profilePictureUrl) {
+      updates.profilePictureUrl = req.body.profilePictureUrl;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
@@ -31,7 +34,17 @@ exports.updateProfile = async (req, res, next) => {
       { new: true, runValidators: true }
     ).select('-password');
 
-    res.status(200).json({ success: true, data: updatedUser });
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updatedUser
+    });
   } catch (error) {
     next(error);
   }
