@@ -118,19 +118,10 @@ export const fetchCurrentUser = async () => {
 
 export const updateUserProfile = async (profileData) => {
   try {
-    // If it's FormData, send it as is. Otherwise, create a new FormData object
-    const formData = profileData instanceof FormData ? profileData : new FormData();
-    
-    // If it's not already FormData, append each field
-    if (!(profileData instanceof FormData)) {
-      Object.keys(profileData).forEach(key => {
-        formData.append(key, profileData[key]);
-      });
-    }
-
-    const response = await api.put('/users/profile', formData, {
+    // Send JSON data instead of FormData to match backend expectations
+    const response = await api.put('/users/profile', profileData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
       },
     });
     return response.data;
